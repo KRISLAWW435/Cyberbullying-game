@@ -1,0 +1,6 @@
+{
+  "name": "Моя суперсила против кибербуллинга | KIBERONE",
+  "description": "Интерактивное игровое занятие для детей 7–12 лет: распознай травлю, защити себя и помоги другим вместе с цифровым роботом-защитником KIBERONE.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

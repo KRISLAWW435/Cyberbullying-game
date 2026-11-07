@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #FFFFFF;
+    color: #172B4D;
+    overflow-x: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+}
+
+.font-brand {
+  font-family: 'Unbounded', 'Plus Jakarta Sans', sans-serif;
+}
+
+/* 3D Flip Card Utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Custom Glass & Glowing effects */
+.cyber-glow-blue {
+  box-shadow: 0 0 25px rgba(0, 123, 255, 0.35);
+}
+
+.cyber-glow-yellow {
+  box-shadow: 0 0 25px rgba(255, 212, 59, 0.45);
+}
+
+.cyber-glow-green {
+  box-shadow: 0 0 25px rgba(56, 142, 60, 0.45);
+}
+
+/* Animations */
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.8;
+    filter: drop-shadow(0 0 8px rgba(0, 123, 255, 0.5));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 20px rgba(255, 212, 59, 0.8));
+  }
+}
+
+.animate-float {
+  animation: floatSlow 4s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2.5s ease-in-out infinite;
+}
+
+/* 3D Tactile Push Button */
+.btn-3d-primary {
+  box-shadow: 0 6px 0 #0056b3, 0 10px 15px rgba(0, 123, 255, 0.3);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn-3d-primary:hover {
+  box-shadow: 0 7px 0 #0056b3, 0 12px 20px rgba(0, 123, 255, 0.4);
+}
+
+.btn-3d-primary:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #0056b3, 0 4px 6px rgba(0, 123, 255, 0.2);
+}
+
