@@ -60,7 +60,7 @@ export const Screen2TeamMission: React.FC<Screen2TeamMissionProps> = ({
     <div className="max-w-5xl mx-auto px-4 py-6 flex flex-col items-center">
       {/* 
         ========================================================================
-        1. MAIN TITLE LOCKUP (Placed at the very top as requested)
+        1. MAIN TITLE LOCKUP (Placed at the very top)
         ========================================================================
       */}
       <h2
@@ -94,7 +94,11 @@ export const Screen2TeamMission: React.FC<Screen2TeamMissionProps> = ({
 
       {/* 
         ========================================================================
-        3. THREE PILLARS CARDS (Enlarged floating 3D icons, large text-lg fonts)
+        3. THREE PILLARS CARDS
+        - Transparent icons with zero white box, zero shadow
+        - Strictly identical container size (w-32 h-32 / 128x128px)
+        - Floating animation applied directly to the transparent container
+        - Clear text in text-lg with high contrast
         ========================================================================
       */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full mb-10">
@@ -109,10 +113,7 @@ export const Screen2TeamMission: React.FC<Screen2TeamMissionProps> = ({
               p.bg
             } ${activeTab === p.id ? 'ring-4 ring-[#FFD43B] scale-105' : ''}`}
           >
-            {/* 
-              Enlarged 3D icon (~1.5–2x size: w-28 h-28 / size 112)
-              Floating animation with staggered delay
-            */}
+            {/* Strictly equal transparent container (w-32 h-32) with floating animation */}
             <motion.div
               animate={{ y: [0, -7, 0] }}
               transition={{
@@ -121,9 +122,9 @@ export const Screen2TeamMission: React.FC<Screen2TeamMissionProps> = ({
                 ease: 'easeInOut',
                 delay: p.delay,
               }}
-              className="mb-4 flex items-center justify-center w-28 h-28"
+              className="w-32 h-32 flex items-center justify-center mb-4 bg-transparent shrink-0"
             >
-              <Pixar3DIcon name={p.iconType} size={112} animate={false} />
+              <Pixar3DIcon name={p.iconType} size="100%" animate={false} />
             </motion.div>
 
             <h3 className="font-brand font-black text-xl sm:text-2xl text-[#172B4D] mb-3">
@@ -177,7 +178,7 @@ export const Screen2TeamMission: React.FC<Screen2TeamMissionProps> = ({
             </p>
           </div>
 
-          {/* Voting Action Button - spacious, comfortable touch target, no cramped text */}
+          {/* Voting Action Button - spacious, comfortable touch target */}
           {!answeredQuestion ? (
             <div className="flex justify-start">
               <button
