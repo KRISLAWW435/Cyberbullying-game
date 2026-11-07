@@ -3,23 +3,33 @@ import {
   InvestigationCase, 
   INVESTIGATION_CASES 
 } from '../data/courseData';
-import { CaseSceneGraphic } from '../components/CaseSceneGraphic';
 import { RobotAssistant } from '../components/RobotAssistant';
-import { Pixar3DIcon } from '../components/Pixar3DIcon';
-import { CyberIcon } from '../components/CyberIcons';
+import { CaseModal } from '../components/CaseModal';
 import { 
   CheckCircle, 
-  XCircle, 
   ArrowRight, 
-  RotateCw, 
   Sparkles, 
   Award, 
-  X, 
-  HelpCircle,
-  Eye,
-  ShieldCheck
+  Search,
+  Check
 } from 'lucide-react';
 import { sound } from '../utils/audio';
+
+import case1Img from '../assets/cases/case-1-sad-phone.jpg';
+import case2Img from '../assets/cases/case-2-laughing-photo.jpg';
+import case3Img from '../assets/cases/case-3-arguing-game.jpg';
+import case4Img from '../assets/cases/case-4-excluded-group.jpg';
+import case5Img from '../assets/cases/case-5-looming-shadow.jpg';
+import case6Img from '../assets/cases/case-6-bystander-watching.jpg';
+
+export const CASE_RIDDLE_IMAGES: Record<number, string> = {
+  1: case1Img,
+  2: case2Img,
+  3: case3Img,
+  4: case4Img,
+  5: case5Img,
+  6: case6Img,
+};
 
 interface Screen4InvestigationProps {
   onCompleteMission: () => void;
@@ -37,51 +47,30 @@ export const Screen4Investigation: React.FC<Screen4InvestigationProps> = ({
   const [selectedCase, setSelectedCase] = useState<InvestigationCase | null>(null);
   const [solvedCases, setSolvedCases] = useState<number[]>([]);
   const [unlockedPowers, setUnlockedPowers] = useState<string[]>([]);
-  const [selectedOptionId, setSelectedOptionId] = useState<'A' | 'B' | 'C' | null>(null);
-  const [showExplanation, setShowExplanation] = useState(false);
-  const [flippedCards, setFlippedCards] = useState<number[]>([]);
-
   const handleOpenCase = (c: InvestigationCase) => {
     sound.playFlip();
     setSelectedCase(c);
-    setSelectedOptionId(null);
-    setShowExplanation(false);
-
-    // Toggle 3D flip card visual
-    if (!flippedCards.includes(c.id)) {
-      setFlippedCards((prev) => [...prev, c.id]);
-    }
   };
 
-  const handleSelectOption = (option: { id: 'A' | 'B' | 'C'; isCorrect: boolean }) => {
-    setSelectedOptionId(option.id);
-    setShowExplanation(true);
-
-    if (option.isCorrect) {
-      sound.playSuccess();
-      if (selectedCase && !solvedCases.includes(selectedCase.id)) {
-        onAddScore(10);
-        setSolvedCases((prev) => [...prev, selectedCase.id]);
-        if (!unlockedPowers.includes(selectedCase.superpower.title)) {
-          setUnlockedPowers((prev) => [...prev, selectedCase.superpower.title]);
-        }
+  const handleCaseSolved = (caseId: number, superpowerTitle: string) => {
+    if (!solvedCases.includes(caseId)) {
+      onAddScore(10);
+      setSolvedCases((prev) => [...prev, caseId]);
+      if (!unlockedPowers.includes(superpowerTitle)) {
+        setUnlockedPowers((prev) => [...prev, superpowerTitle]);
       }
-    } else {
-      sound.playAlert();
     }
   };
 
   const handleCloseModal = () => {
     sound.playClick();
     setSelectedCase(null);
-    setSelectedOptionId(null);
-    setShowExplanation(false);
   };
 
   const isAllCasesSolved = solvedCases.length === INVESTIGATION_CASES.length;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-6 flex flex-col items-center">
+    <div className="max-w-6xl mx-auto px-4 py-6 flex flex-col items-center pb-28 mb-10">
       {/* Top Banner */}
       <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FFF6D8] border border-[#FFD43B] text-amber-900 font-bold text-xs sm:text-sm mb-3">
         <Sparkles size={16} className="text-amber-600" />
@@ -91,131 +80,124 @@ export const Screen4Investigation: React.FC<Screen4InvestigationProps> = ({
       <h2 className="font-brand font-black text-2xl sm:text-4xl text-[#172B4D] text-center mb-2">
         ИГРОВОЕ ПОЛЕ РАССЛЕДОВАНИЯ
       </h2>
-      <p className="text-sm sm:text-base text-slate-600 font-medium text-center max-w-2xl mb-6">
-        Обсудите каждую из 6 ситуаций всем классом. Нажмите на карточку дела, выберите безопасное решение и откройте суперсилу KIBERONE!
+      <p className="text-sm sm:text-base text-slate-600 font-semibold text-center max-w-2xl mb-6">
+        Внимательно изучите каждую 3D-загадку. Нажмите «Открыть дело», обсудите ситуацию и откройте суперсилу KIBERONE!
       </p>
 
-      {/* Progress pill tracker */}
-      <div className="flex items-center gap-2 mb-6 bg-white px-4 py-2 rounded-2xl border border-slate-200 shadow-xs">
-        <span className="text-xs font-bold text-slate-500 uppercase">Расследовано дел:</span>
-        <span className="font-brand font-black text-sm text-[#007BFF]">
-          {solvedCases.length} из {INVESTIGATION_CASES.length}
-        </span>
-        <div className="flex gap-1 ml-2">
-          {INVESTIGATION_CASES.map((c) => (
-            <span
-              key={c.id}
-              className={`w-3 h-3 rounded-full ${
-                solvedCases.includes(c.id) ? 'bg-[#388E3C]' : 'bg-slate-200'
-              }`}
-            />
-          ))}
+      {/* 
+        ========================================================================
+        ЗАДАЧА 4: Улучшенный, контрастный и крупный индикатор прогресса для класса
+        ========================================================================
+      */}
+      <div className="w-full max-w-4xl bg-white rounded-3xl border-3 border-slate-200 p-4 sm:px-6 sm:py-4 mb-8 shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-3 whitespace-nowrap shrink-0">
+          <div className="w-10 h-10 rounded-2xl bg-blue-50 text-[#007BFF] flex items-center justify-center font-bold shrink-0">
+            <Search size={22} />
+          </div>
+          <div className="whitespace-nowrap">
+            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Прогресс расследования:
+            </div>
+            <div className="font-brand font-black text-lg sm:text-xl text-[#172B4D] whitespace-nowrap">
+              <span>Расследовано дел: </span>
+              <span className="text-[#007BFF] inline-block">
+                {solvedCases.length} из {INVESTIGATION_CASES.length}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* 6 Large Contrast Circles */}
+        <div className="flex items-center gap-2 sm:gap-2.5">
+          {INVESTIGATION_CASES.map((c) => {
+            const isSolved = solvedCases.includes(c.id);
+            return (
+              <div
+                key={c.id}
+                title={`Дело №${c.id}: ${c.title}`}
+                className={`w-9 h-9 sm:w-11 sm:h-11 rounded-2xl flex items-center justify-center font-brand font-black text-sm sm:text-base transition-all duration-300 ${
+                  isSolved
+                    ? 'bg-[#388E3C] text-white shadow-md shadow-green-500/30 scale-105 border-2 border-emerald-400'
+                    : 'bg-slate-100 text-slate-500 border-2 border-slate-300'
+                }`}
+              >
+                {isSolved ? <Check size={20} strokeWidth={3} /> : c.id}
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* 6 Cases Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full mb-8">
+      {/* 
+        ========================================================================
+        ЗАДАЧА 2: 6 Сюжетных карточек-загадок с большими 3D-иллюстрациями
+        ========================================================================
+      */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 w-full mb-10">
         {INVESTIGATION_CASES.map((caseItem) => {
           const isSolved = solvedCases.includes(caseItem.id);
-          const isFlipped = flippedCards.includes(caseItem.id);
+          const riddleImage = CASE_RIDDLE_IMAGES[caseItem.id];
 
           return (
             <div
               key={caseItem.id}
               onClick={() => handleOpenCase(caseItem)}
-              className="perspective-1000 cursor-pointer h-72 group"
+              className={`rounded-3xl border-3 p-5 sm:p-6 flex flex-col justify-between cursor-pointer transition-all duration-300 hover:-translate-y-2 group shadow-md hover:shadow-2xl ${
+                isSolved
+                  ? 'bg-gradient-to-b from-emerald-50/90 to-white border-[#388E3C]'
+                  : 'bg-white border-slate-200 hover:border-[#007BFF]'
+              }`}
             >
-              <div
-                className={`relative w-full h-full duration-500 transform-style-3d transition-transform rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-1.5 ${
-                  isFlipped ? 'rotate-y-180' : ''
-                }`}
-              >
-                {/* FRONT FACE */}
-                <div
-                  className={`absolute inset-0 backface-hidden p-5 rounded-3xl border-3 flex flex-col justify-between ${
-                    isSolved
-                      ? 'bg-emerald-50/90 border-[#388E3C]'
-                      : 'bg-white border-slate-200 hover:border-[#007BFF]'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="px-3 py-1 rounded-full bg-slate-100 font-brand font-black text-xs text-[#172B4D]">
-                      ДЕЛО №{caseItem.id}
-                    </span>
-                    {isSolved ? (
-                      <span className="flex items-center gap-1 text-xs font-bold text-[#388E3C] bg-emerald-100 px-2.5 py-0.5 rounded-full">
-                        <CheckCircle size={14} /> Раскрыто (+10)
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-1 text-xs font-bold text-amber-700 bg-amber-100 px-2.5 py-0.5 rounded-full">
-                        <HelpCircle size={14} /> Открыть дело
-                      </span>
-                    )}
-                  </div>
+              {/* Top Tag & Status */}
+              <div className="flex items-center justify-between mb-3">
+                <span className="px-3.5 py-1 rounded-full bg-slate-100 font-brand font-black text-xs text-[#172B4D] border border-slate-200">
+                  ДЕЛО №{caseItem.id}
+                </span>
 
-                  {/* Icon & Title */}
-                  <div className="flex flex-col items-center text-center my-auto">
-                    <div className="mb-2 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      {caseItem.superpower.icon === 'shield' ? (
-                        <Pixar3DIcon name="shield" size={58} />
-                      ) : caseItem.superpower.icon === 'search' ? (
-                        <Pixar3DIcon name="lupa" size={58} />
-                      ) : (
-                        <CyberIcon name={caseItem.superpower.icon} size={48} />
-                      )}
-                    </div>
-                    <h3 className="font-brand font-bold text-lg text-[#172B4D] mb-1 leading-snug">
-                      {caseItem.title}
-                    </h3>
-                    <p className="text-xs text-slate-500 font-medium">
-                      {caseItem.shortDesc}
-                    </p>
-                  </div>
+                {isSolved ? (
+                  <span className="flex items-center gap-1 text-xs font-black text-[#388E3C] bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300">
+                    <CheckCircle size={15} /> Раскрыто (+10)
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1 text-xs font-bold text-[#007BFF] bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
+                    <Search size={13} /> Загадка
+                  </span>
+                )}
+              </div>
 
-                  {/* Bottom Tap Cue */}
-                  <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-[#007BFF]">
-                    <span>Нажмите, чтобы начать 🔎</span>
-                    <RotateCw size={14} className="text-slate-400 group-hover:rotate-180 transition-transform" />
-                  </div>
+              {/* Big 3D Riddle Illustration */}
+              <div className="w-full flex flex-col items-center my-2">
+                <div className="w-44 h-44 sm:w-48 sm:h-48 rounded-2xl bg-slate-50/50 p-2 border border-slate-100 flex items-center justify-center overflow-hidden mb-3 group-hover:scale-105 transition-transform duration-300">
+                  <img
+                    src={riddleImage}
+                    alt={caseItem.title}
+                    className="w-full h-full object-contain filter drop-shadow-sm"
+                    referrerPolicy="no-referrer"
+                  />
                 </div>
 
-                {/* BACK FACE (3D Flip view after solved or opened) */}
-                <div
-                  className={`absolute inset-0 backface-hidden rotate-y-180 p-5 rounded-3xl border-3 flex flex-col justify-between ${
+                {/* Title & Short Prompt */}
+                <h3 className="font-brand font-black text-xl text-[#172B4D] text-center mb-1 leading-snug">
+                  {caseItem.title}
+                </h3>
+                <p className="text-sm font-semibold text-slate-500 text-center">
+                  «Что здесь происходит?»
+                </p>
+              </div>
+
+              {/* Big Prominent "Открыть дело" Button */}
+              <div className="mt-4 pt-2">
+                <button
+                  type="button"
+                  className={`w-full h-14 min-h-[56px] px-4 rounded-2xl font-brand font-black text-base leading-snug flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md ${
                     isSolved
-                      ? 'bg-gradient-to-b from-emerald-50 to-white border-[#388E3C]'
-                      : 'bg-gradient-to-b from-[#EAF4FF] to-white border-[#007BFF]'
+                      ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                      : 'bg-[#007BFF] hover:bg-blue-600 text-white group-hover:shadow-blue-500/30'
                   }`}
                 >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-black text-[#172B4D]">
-                      ДЕЛО №{caseItem.id} • СУПЕРСИЛА
-                    </span>
-                    <span className="w-3 h-3 rounded-full bg-[#FFD43B]" />
-                  </div>
-
-                  <div className="flex flex-col items-center text-center my-auto">
-                    <div className="mb-2 flex items-center justify-center">
-                      {caseItem.superpower.icon === 'shield' ? (
-                        <Pixar3DIcon name="shield" size={46} />
-                      ) : caseItem.superpower.icon === 'search' ? (
-                        <Pixar3DIcon name="lupa" size={46} />
-                      ) : (
-                        <CyberIcon name={caseItem.superpower.icon} size={38} />
-                      )}
-                    </div>
-                    <h4 className="font-brand font-black text-sm text-[#007BFF] mb-1">
-                      {caseItem.superpower.title}
-                    </h4>
-                    <p className="text-[11px] text-slate-600 font-semibold italic">
-                      {caseItem.superpower.description}
-                    </p>
-                  </div>
-
-                  <div className="text-center text-xs font-bold text-slate-700 bg-white/80 py-1.5 rounded-xl border border-slate-200">
-                    {isSolved ? '✅ Дело раскрыто' : '🔎 Нажмите для расследования'}
-                  </div>
-                </div>
+                  <Search size={18} className="shrink-0" />
+                  <span className="whitespace-nowrap">{isSolved ? 'Посмотреть решение' : 'Открыть дело'}</span>
+                </button>
               </div>
             </div>
           );
@@ -230,13 +212,13 @@ export const Screen4Investigation: React.FC<Screen4InvestigationProps> = ({
               <Award size={36} />
             </div>
             <div>
-              <div className="text-xs font-black text-[#FFD43B] uppercase tracking-wider mb-0.5">
+              <div className="text-xs sm:text-sm font-black text-[#FFD43B] uppercase tracking-wider mb-1">
                 РАССЛЕДОВАНИЕ ЗАВЕРШЕНО!
               </div>
-              <h3 className="font-brand font-black text-xl sm:text-2xl mb-1">
+              <h3 className="font-brand font-black text-2xl sm:text-3xl mb-1.5 leading-tight">
                 Все 6 дел успешно раскрыты командой!
               </h3>
-              <p className="text-xs sm:text-sm text-blue-100 font-medium">
+              <p className="text-base sm:text-lg text-blue-50 font-semibold leading-relaxed">
                 Вы научились замечать признаки травли и отличать её от обычного конфликта. Теперь перейдём к алгоритму действий!
               </p>
             </div>
@@ -255,8 +237,8 @@ export const Screen4Investigation: React.FC<Screen4InvestigationProps> = ({
         </div>
       )}
 
-      {/* Robot Advice - Dialogue Layout */}
-      <div className="w-full max-w-2xl mb-6">
+      {/* Robot Advice */}
+      <div className="w-full max-w-2xl my-6">
         <RobotAssistant
           state={isAllCasesSolved ? 'happy' : isDiscussionMode ? 'thinking' : 'warning'}
           size="dialog"
@@ -271,189 +253,17 @@ export const Screen4Investigation: React.FC<Screen4InvestigationProps> = ({
 
       {/* MODAL WINDOW FOR ACTIVE CASE */}
       {selectedCase && (
-        <div className="fixed inset-0 z-50 bg-[#172B4D]/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-3xl w-full p-5 sm:p-8 shadow-2xl border-4 border-[#007BFF] relative my-auto animate-in fade-in zoom-in-95 duration-200">
-            {/* Header of Modal */}
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
-              <div className="flex items-center gap-2">
-                <span className="px-3 py-1 rounded-full bg-[#EAF4FF] text-[#007BFF] font-brand font-black text-xs">
-                  ДЕЛО №{selectedCase.id}
-                </span>
-                <h3 className="font-brand font-black text-xl text-[#172B4D]">
-                  {selectedCase.title}
-                </h3>
-              </div>
-              <button
-                onClick={handleCloseModal}
-                className="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-colors cursor-pointer"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            {/* Case Visual Scene Graphic with 3D Pixar Smartphone */}
-            <div className="mb-4">
-              <CaseSceneGraphic type={selectedCase.visualType} />
-            </div>
-
-            {/* Scenario Description */}
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-4">
-              <span className="text-xs font-bold text-[#007BFF] uppercase tracking-wider block mb-1">
-                Что произошло:
-              </span>
-              <p className="text-sm sm:text-base font-semibold text-[#172B4D] leading-relaxed">
-                {selectedCase.scenarioText}
-              </p>
-            </div>
-
-            {/* Question */}
-            <div className="mb-4">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="font-brand font-black text-base sm:text-lg text-[#172B4D]">
-                  ❓ {selectedCase.question}
-                </h4>
-                {/* Mentor Mode Toggle */}
-                <button
-                  onClick={onToggleDiscussionMode}
-                  className="text-xs font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-300 px-3 py-1 rounded-lg flex items-center gap-1 cursor-pointer"
-                >
-                  <Eye size={14} />
-                  <span>{isDiscussionMode ? 'Открыть варианты' : 'Скрыть для дискуссии'}</span>
-                </button>
-              </div>
-
-              {/* Discussion Mode Screen / Options */}
-              {isDiscussionMode && !selectedOptionId ? (
-                <div className="p-6 bg-amber-50 border-2 border-amber-300 rounded-2xl text-center">
-                  <div className="text-lg font-bold text-amber-900 mb-1">
-                    🗣️ Время обсуждения с наставником!
-                  </div>
-                  <p className="text-sm text-amber-800 font-medium mb-4">
-                    Ребята, выскажите свои мнения устно: как бы вы поступили в этой ситуации?
-                  </p>
-                  <button
-                    onClick={onToggleDiscussionMode}
-                    className="px-6 py-2.5 bg-[#007BFF] text-white font-bold text-sm rounded-xl cursor-pointer hover:bg-blue-600 transition-colors shadow-sm"
-                  >
-                    Показать 3 варианта ответа
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {selectedCase.options.map((opt) => {
-                    const isSelected = selectedOptionId === opt.id;
-                    const isCorrect = opt.isCorrect;
-
-                    let btnStyle = 'bg-white border-2 border-slate-200 hover:border-blue-400 hover:bg-blue-50/50';
-                    if (showExplanation) {
-                      if (isCorrect) {
-                        btnStyle = 'bg-emerald-50 border-2 border-emerald-500 shadow-md ring-2 ring-emerald-300';
-                      } else if (isSelected) {
-                        btnStyle = 'bg-red-50 border-2 border-red-400 shadow-xs';
-                      } else {
-                        btnStyle = 'bg-slate-50 border-2 border-slate-200 opacity-60';
-                      }
-                    }
-
-                    return (
-                      <button
-                        key={opt.id}
-                        disabled={showExplanation}
-                        onClick={() => handleSelectOption(opt)}
-                        className={`w-full p-4 rounded-2xl text-left transition-all cursor-pointer flex items-start gap-3 ${btnStyle}`}
-                      >
-                        <span
-                          className={`w-8 h-8 rounded-xl font-brand font-black text-sm flex items-center justify-center shrink-0 ${
-                            showExplanation && isCorrect
-                              ? 'bg-emerald-600 text-white'
-                              : showExplanation && isSelected
-                              ? 'bg-red-500 text-white'
-                              : 'bg-slate-100 text-[#172B4D]'
-                          }`}
-                        >
-                          {opt.id}
-                        </span>
-
-                        <div className="flex-1">
-                          <p className="text-sm font-semibold text-[#172B4D] leading-snug">
-                            {opt.text}
-                          </p>
-
-                          {/* Specific feedback text if selected or solved */}
-                          {showExplanation && (isSelected || isCorrect) && (
-                            <p
-                              className={`text-xs mt-1.5 font-medium ${
-                                isCorrect ? 'text-emerald-700 font-bold' : 'text-red-600'
-                              }`}
-                            >
-                              {opt.feedback}
-                            </p>
-                          )}
-                        </div>
-
-                        {showExplanation && isCorrect && (
-                          <CheckCircle className="text-emerald-600 shrink-0 mt-1" size={22} />
-                        )}
-                        {showExplanation && isSelected && !isCorrect && (
-                          <XCircle className="text-red-500 shrink-0 mt-1" size={22} />
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            {/* Explanation & Superpower Box */}
-            {showExplanation && (
-              <div className="space-y-3 mt-4 animate-in fade-in duration-300">
-                <div className="bg-[#EAF4FF] border border-[#007BFF]/30 rounded-2xl p-4">
-                  <div className="flex items-center gap-2 text-xs font-bold text-[#007BFF] uppercase tracking-wider mb-1">
-                    <ShieldCheck size={16} /> Разбор ситуации от наставника:
-                  </div>
-                  <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
-                    {selectedCase.explanation}
-                  </p>
-                </div>
-
-                {/* Superpower Award Box */}
-                <div className="bg-[#FFF6D8] border-2 border-[#FFD43B] rounded-2xl p-4 flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-white shadow-md flex items-center justify-center shrink-0">
-                    {selectedCase.superpower.icon === 'shield' ? (
-                      <Pixar3DIcon name="shield" size={42} />
-                    ) : selectedCase.superpower.icon === 'search' ? (
-                      <Pixar3DIcon name="lupa" size={42} />
-                    ) : (
-                      <CyberIcon name={selectedCase.superpower.icon} size={36} />
-                    )}
-                  </div>
-                  <div>
-                    <div className="text-[11px] font-bold text-amber-800 uppercase tracking-wider">
-                      Открыта суперсила от KIBERONE:
-                    </div>
-                    <div className="font-brand font-black text-base text-[#172B4D]">
-                      {selectedCase.superpower.title}
-                    </div>
-                    <p className="text-xs text-amber-950 font-semibold italic">
-                      {selectedCase.superpower.description}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Modal close / next button */}
-                <div className="pt-2 flex justify-end">
-                  <button
-                    onClick={handleCloseModal}
-                    className="h-12 px-6 rounded-xl bg-[#007BFF] hover:bg-blue-600 text-white font-bold text-sm shadow-md transition-colors cursor-pointer"
-                  >
-                    Вернуться к игровому полю
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+        <CaseModal
+          selectedCase={selectedCase}
+          isAlreadySolved={solvedCases.includes(selectedCase.id)}
+          isDiscussionMode={isDiscussionMode}
+          onClose={handleCloseModal}
+          onToggleDiscussionMode={onToggleDiscussionMode}
+          onCaseSolved={handleCaseSolved}
+        />
       )}
     </div>
   );
 };
+
+export default Screen4Investigation;

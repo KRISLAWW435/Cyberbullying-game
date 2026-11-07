@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import { RobotAssistant } from '../components/RobotAssistant';
 import { Pixar3DIcon, Pixar3DIconName } from '../components/Pixar3DIcon';
-import { CheckCircle2, ArrowRight, Sparkles, Search, ShieldAlert, Folder } from 'lucide-react';
+import { CheckCircle2, ArrowRight, Sparkles, Search, ShieldAlert, Folder, RotateCw } from 'lucide-react';
 import { sound } from '../utils/audio';
+
+import clue1Insults from '../assets/clues/clue-1-insults.jpg';
+import clue2Threats from '../assets/clues/clue-2-threats.jpg';
+import clue3Rumors from '../assets/clues/clue-3-rumors.jpg';
+import clue4Isolation from '../assets/clues/clue-4-isolation.jpg';
 
 interface Screen3DetectivesProps {
   onCompleteMission: () => void;
@@ -16,40 +21,46 @@ export const Screen3Detectives: React.FC<Screen3DetectivesProps> = ({
   const [unlockedSigns, setUnlockedSigns] = useState<number[]>([]);
   const [missionAwarded, setMissionAwarded] = useState(false);
 
-  const signs: Array<{
-    id: number;
-    title: string;
-    icon: Pixar3DIconName;
-    desc: string;
-    example: string;
-  }> = [
+  const signs = [
     {
       id: 1,
       title: 'Повторяющиеся оскорбления',
-      icon: 'chat',
+      icon: 'chat' as Pixar3DIconName,
+      image: clue1Insults,
+      imageAlt: '3D-смартфон со всплывающими злыми сообщениями',
       desc: 'Это не случайная оплошность, а систематические нападки в чатах, комментариях или голосовом чате день за днём.',
-      example: '«Ты плохо играешь», «уходи отсюда», постоянный хейт под каждым постом.'
+      example: '«Ты плохо играешь», «уходи отсюда», постоянный хейт под каждым постом.',
+      mentorQuestion: '«Почему обидные слова в интернете ранят так же сильно, как и сказанные в лицо?»'
     },
     {
       id: 2,
       title: 'Угрозы и запугивание',
-      icon: 'shield',
+      icon: 'shield' as Pixar3DIconName,
+      image: clue2Threats,
+      imageAlt: 'Испуганный 3D-робот с красным знаком восклицания',
       desc: 'Попытки напугать ребёнка: «я тебя найду», «расскажу всем твой секрет», вымогательство аккаунтов или скинов.',
-      example: 'Любая угроза или шантаж — повод НЕМЕДЛЕННО позвать взрослого!'
+      example: 'Любая угроза или шантаж — повод НЕМЕДЛЕННО позвать взрослого!',
+      mentorQuestion: '«К кому из взрослых ты обратишься первым делом при опасных угрозах в сети?»'
     },
     {
       id: 3,
       title: 'Слухи и чужие фото',
-      icon: 'camera',
+      icon: 'camera' as Pixar3DIconName,
+      image: clue3Rumors,
+      imageAlt: '3D-фотография и смартфон с разлетающимися стрелками шеринга',
       desc: 'Публикация чужих фото без разрешения, обработка снимков в обидных редакторах и выдумка неправдивых историй.',
-      example: 'Создание и распространение унизительных мемов с одноклассниками.'
+      example: 'Создание и распространение унизительных мемов с одноклассниками.',
+      mentorQuestion: '«Почему нельзя пересылать чужие фотографии без согласия того, кто на них изображён?»'
     },
     {
       id: 4,
       title: 'Намеренная изоляция',
-      icon: 'lock',
+      icon: 'lock' as Pixar3DIconName,
+      image: clue4Isolation,
+      imageAlt: 'Группа 3D-роботов в кругу и один грустный робот в стороне',
       desc: 'Создание закрытых групп «против одного», бойкот в играх, сговор «не дружить», чтобы причинить боль.',
-      example: 'Удаление из всех общих бесед и запрет общаться с человеком.'
+      example: 'Удаление из всех общих бесед и запрет общаться с человеком.',
+      mentorQuestion: '«Что чувствует человек, которого намеренно не пускают в общую беседу?»'
     }
   ];
 
@@ -74,7 +85,8 @@ export const Screen3Detectives: React.FC<Screen3DetectivesProps> = ({
   const allSignsDiscovered = unlockedSigns.length === 4;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-6 flex flex-col items-center pb-20">
+    /* Расширенный контейнер max-w-7xl для широких карточек */
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex flex-col items-center pb-28 mb-10">
       {/* Stage Badge */}
       <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#EAF4FF] border border-[#007BFF]/30 text-[#007BFF] font-bold text-xs sm:text-sm mb-3">
         <Sparkles size={16} className="text-[#FFD43B]" />
@@ -90,7 +102,7 @@ export const Screen3Detectives: React.FC<Screen3DetectivesProps> = ({
 
       {/* 
         ========================================================================
-        1. COMPARISON CARDS: Conflict vs Cyberbullying (Static & Clean - No false click cues)
+        1. COMPARISON CARDS: Conflict vs Cyberbullying
         ========================================================================
       */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full mb-10">
@@ -149,7 +161,7 @@ export const Screen3Detectives: React.FC<Screen3DetectivesProps> = ({
 
       {/* 
         ========================================================================
-        2. GOLDEN DEFINITION BOX: REFACTORED INTO CLEAR STRUCTURED THESES
+        2. GOLDEN DEFINITION BOX
         ========================================================================
       */}
       <div className="w-full bg-[#FFF6D8] border-3 border-[#FFD43B] rounded-3xl p-6 sm:p-7 mb-10 shadow-md">
@@ -162,7 +174,6 @@ export const Screen3Detectives: React.FC<Screen3DetectivesProps> = ({
               Главное правило кибердетектива
             </h3>
 
-            {/* Main definition: bold, large font */}
             <p className="text-lg sm:text-xl font-bold text-[#172B4D] leading-relaxed mb-3">
               <strong>Кибербуллинг</strong> — это{' '}
               <span className="text-red-600 font-black underline decoration-red-300 underline-offset-4">
@@ -171,7 +182,6 @@ export const Screen3Detectives: React.FC<Screen3DetectivesProps> = ({
               человека с помощью цифровых технологий (чатов, соцсетей, игр).
             </p>
 
-            {/* Important addition: clearly highlighted */}
             <div className="p-3 bg-amber-100/70 border border-amber-300 rounded-xl text-base sm:text-lg font-bold text-amber-950 flex items-center gap-2">
               <ShieldAlert className="text-amber-700 shrink-0" size={22} />
               <span>
@@ -185,116 +195,142 @@ export const Screen3Detectives: React.FC<Screen3DetectivesProps> = ({
 
       {/* 
         ========================================================================
-        3. INTERACTIVE 3D FLIP CARDS: 4 SIGNS OF CYBERBULLYING (Dossier Folder Style)
-        - Folder tab design
-        - Fixed height (h-[350px]) + overflow-hidden to prevent text spilling
-        - Comfortable readable font sizes
+        3. INTERACTIVE 3D FLIP CARDS: 2x2 GRID (No Scroll, w-40/w-48, h-[620px])
         ========================================================================
       */}
       <div className="w-full mb-12">
         {/* Mentor Classroom Callout */}
-        <div className="w-full bg-amber-50 border-2 border-amber-300 rounded-2xl px-5 py-3.5 mb-6 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
-          <div className="flex items-center gap-2.5">
-            <span className="text-2xl">💡</span>
-            <span className="font-brand font-black text-sm sm:text-base text-amber-950">
+        <div className="w-full bg-amber-50 border-2 border-amber-300 rounded-2xl px-5 py-4 mb-6 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
+          <div className="flex items-center gap-3">
+            <span className="text-3xl">💡</span>
+            <span className="font-brand font-black text-base sm:text-lg text-amber-950">
               Вызовите ученика к экрану нажать на карточку и раскрыть улику!
             </span>
           </div>
-          <div className="px-3.5 py-1 rounded-full bg-white border border-amber-300 text-[#007BFF] font-brand font-black text-xs shrink-0 shadow-2xs">
+          <div className="px-4 py-1.5 rounded-full bg-white border-2 border-amber-300 text-[#007BFF] font-brand font-black text-sm shrink-0 shadow-2xs">
             Раскрыто улик: {unlockedSigns.length} из 4
           </div>
         </div>
 
-        {/* 4 Cards Grid with Dossier Folder Design & 3D Flip */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* 2x2 Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 w-full">
           {signs.map((sign) => {
             const isFlipped = unlockedSigns.includes(sign.id);
 
             return (
               <div key={sign.id} className="flex flex-col select-none">
                 {/* Dossier Folder Visual Tab Header */}
-                <div className="flex items-center justify-between px-3">
+                <div className="flex items-center justify-between px-3 mb-1">
                   <div
-                    className={`px-3 py-1 rounded-t-xl font-brand font-black text-xs transition-colors flex items-center gap-1.5 ${
+                    className={`px-4 py-1.5 rounded-t-xl font-brand font-black text-xs sm:text-sm transition-colors flex items-center gap-1.5 ${
                       isFlipped
-                        ? 'bg-[#007BFF] text-white'
+                        ? 'bg-[#007BFF] text-white shadow-xs'
                         : 'bg-slate-200 text-slate-700'
                     }`}
                   >
-                    <Folder size={13} />
+                    <Folder size={16} />
                     <span>УЛИКА №{sign.id}</span>
                   </div>
-                  {isFlipped && (
-                    <span className="text-[11px] font-bold text-emerald-600 flex items-center gap-0.5">
-                      <CheckCircle2 size={12} /> Открыто
+                  {isFlipped ? (
+                    <span className="text-xs font-bold text-emerald-600 flex items-center gap-1 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                      <CheckCircle2 size={14} /> Открыто
                     </span>
+                  ) : (
+                    <span className="text-xs font-semibold text-slate-400">Нажмите для разгадки</span>
                   )}
                 </div>
 
-                {/* Card Container with Fixed Height & 3D Flip */}
+                {/* Card Container (min-h-[620px] h-[620px] sm:h-[650px] fixed) */}
                 <div
                   onClick={() => handleToggleSign(sign.id)}
-                  className="perspective-1000 cursor-pointer h-[350px] w-full group"
+                  className="perspective-1000 cursor-pointer min-h-[620px] h-[620px] sm:h-[650px] w-full group"
                 >
                   <div
-                    className={`relative w-full h-full duration-500 transform-style-3d transition-transform rounded-b-3xl rounded-tr-3xl shadow-lg hover:shadow-2xl hover:-translate-y-1 ${
+                    className={`relative w-full h-full duration-500 transform-style-3d transition-transform rounded-b-3xl rounded-tr-3xl shadow-lg hover:shadow-2xl hover:-translate-y-1.5 ${
                       isFlipped ? 'rotate-y-180' : ''
                     }`}
                   >
                     {/* FRONT FACE (Unopened Clue Folder) */}
-                    <div className="absolute inset-0 backface-hidden p-5 rounded-b-3xl rounded-tr-3xl border-3 bg-white border-slate-200 hover:border-[#007BFF] flex flex-col justify-between items-center text-center overflow-hidden">
-                      {/* Top Action Cue */}
-                      <div className="w-full flex items-center justify-end">
-                        <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FFD43B] text-[#172B4D] text-[11px] font-black shadow-xs animate-pulse">
-                          <Search size={12} className="stroke-[3]" />
-                          <span>Открыть улику</span>
+                    <div className="absolute inset-0 backface-hidden p-6 sm:p-8 rounded-b-3xl rounded-tr-3xl border-3 bg-white border-slate-200 hover:border-[#007BFF] flex flex-col justify-between items-center text-center overflow-hidden transition-colors">
+                      <div className="w-full flex items-center justify-between">
+                        <span className="px-3.5 py-1.5 rounded-full bg-blue-50 text-[#007BFF] font-brand font-black text-xs sm:text-sm uppercase tracking-wider">
+                          Улика #{sign.id}
+                        </span>
+                        <div className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#FFD43B] text-[#172B4D] text-xs sm:text-sm font-black shadow-xs group-hover:scale-105 transition-transform">
+                          <Search size={15} className="stroke-[3]" />
+                          <span>Разгадать</span>
                         </div>
                       </div>
 
-                      {/* Centered 3D Icon & Title */}
-                      <div className="my-auto flex flex-col items-center px-2">
-                        <div className="w-20 h-20 mb-3 flex items-center justify-center group-hover:scale-110 transition-transform">
-                          <Pixar3DIcon name={sign.icon} size={80} animate={false} />
+                      <div className="my-auto flex flex-col items-center px-4">
+                        <div className="w-32 h-32 sm:w-40 sm:h-40 mb-6 flex items-center justify-center group-hover:scale-110 transition-transform filter drop-shadow-md">
+                          <Pixar3DIcon name={sign.icon} size={130} animate={false} />
                         </div>
-                        <h4 className="font-brand font-black text-lg sm:text-xl text-[#172B4D] leading-snug">
+                        <h4 className="font-brand font-black text-2xl sm:text-3xl text-[#172B4D] leading-snug">
                           {sign.title}
                         </h4>
                       </div>
 
-                      <div className="pt-2 border-t border-slate-100 w-full text-[11px] font-bold text-[#007BFF]">
-                        Нажмите, чтобы разгадать 🔎
+                      <div className="pt-3 border-t border-slate-100 w-full text-sm font-bold text-[#007BFF] flex items-center justify-center gap-2">
+                        <span>Нажмите, чтобы разгадать</span>
+                        <span className="text-base">🔎</span>
                       </div>
                     </div>
 
-                    {/* BACK FACE (Flipped Open Dossier Detail) */}
-                    <div className="absolute inset-0 backface-hidden rotate-y-180 p-5 rounded-b-3xl rounded-tr-3xl border-3 bg-gradient-to-b from-[#EAF4FF] via-white to-blue-50 border-[#007BFF] flex flex-col justify-between text-left shadow-xl overflow-hidden">
-                      <div className="flex flex-col h-full justify-between">
-                        {/* Top Green Stamp Header */}
-                        <div>
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 border border-emerald-400 text-emerald-800 font-brand font-black text-[11px] uppercase tracking-wider shadow-2xs">
-                              <CheckCircle2 size={14} className="text-emerald-600 shrink-0" />
-                              <span>✓ УЛИКА НАЙДЕНА</span>
-                            </span>
-                            <div className="w-9 h-9 flex items-center justify-center shrink-0">
-                              <Pixar3DIcon name={sign.icon} size={36} animate={false} />
-                            </div>
-                          </div>
+                    {/* BACK FACE (Strictly overflow-hidden, No internal scroll!) */}
+                    <div className="absolute inset-0 backface-hidden rotate-y-180 p-5 sm:p-6 rounded-b-3xl rounded-tr-3xl border-3 bg-gradient-to-b from-[#EAF4FF] via-white to-blue-50/70 border-[#007BFF] flex flex-col justify-between text-left shadow-xl overflow-hidden">
+                      {/* Top Header Badge */}
+                      <div className="flex items-center justify-between shrink-0 mb-1.5">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 border border-emerald-400 text-emerald-800 font-brand font-black text-xs uppercase tracking-wider shadow-2xs">
+                          <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
+                          <span>✓ Улика найдена</span>
+                        </span>
+                        <span className="text-xs font-bold text-slate-400 hover:text-[#007BFF] flex items-center gap-1">
+                          <RotateCw size={13} /> Свернуть
+                        </span>
+                      </div>
 
-                          <h4 className="font-brand font-black text-base text-[#007BFF] mb-1.5 leading-snug">
-                            {sign.title}
-                          </h4>
+                      {/* Compact 3D Illustration: w-40 h-40 sm:w-48 sm:h-48 */}
+                      <div className="w-full flex justify-center shrink-0 my-1">
+                        <div className="w-40 h-40 sm:w-48 sm:h-48 rounded-2xl bg-white p-2 shadow-sm border border-blue-100 flex items-center justify-center overflow-hidden">
+                          <img
+                            src={sign.image}
+                            alt={sign.imageAlt}
+                            className="w-full h-full object-contain hover:scale-105 transition-transform"
+                            referrerPolicy="no-referrer"
+                          />
+                        </div>
+                      </div>
 
-                          {/* Concise, readable text inside overflow-hidden box */}
-                          <p className="text-xs sm:text-sm text-slate-700 font-semibold leading-relaxed mb-2 line-clamp-4">
-                            {sign.desc}
-                          </p>
+                      {/* Content block: tight margins, crisp text */}
+                      <div className="flex-1 flex flex-col justify-between min-h-0">
+                        {/* Title */}
+                        <h4 className="font-brand font-black text-xl sm:text-2xl text-[#007BFF] leading-snug mb-1 shrink-0">
+                          {sign.title}
+                        </h4>
+
+                        {/* Description: text-base sm:text-lg font-semibold */}
+                        <p className="text-base sm:text-lg text-slate-800 font-semibold leading-snug mb-2 shrink-0">
+                          {sign.desc}
+                        </p>
+
+                        {/* Example Box: bg-blue-50, border-blue-200 */}
+                        <div className="p-3 sm:p-3.5 bg-blue-50 rounded-2xl border-2 border-blue-200 text-sm sm:text-base text-slate-800 leading-snug mb-2 shadow-xs shrink-0">
+                          <span className="text-[#007BFF] font-black uppercase tracking-wider block text-xs sm:text-sm mb-0.5">
+                            Пример из жизни:
+                          </span>
+                          <span>{sign.example}</span>
                         </div>
 
-                        {/* Real-life example box at bottom */}
-                        <div className="p-2.5 bg-white/95 rounded-xl border border-blue-200 text-[11px] sm:text-xs font-bold text-blue-950 leading-snug shadow-2xs mt-auto">
-                          <span className="text-[#007BFF] uppercase tracking-wider block text-[10px] mb-0.5">Пример:</span>
-                          {sign.example}
+                        {/* Mentor Question Box: bg-amber-50, text-base sm:text-lg */}
+                        <div className="p-3 sm:p-3.5 bg-amber-50 rounded-2xl border-2 border-amber-300 text-sm sm:text-base font-bold text-amber-900 leading-snug shadow-xs flex items-start gap-2.5 shrink-0">
+                          <span className="text-xl shrink-0">💬</span>
+                          <div>
+                            <span className="text-xs uppercase tracking-wider font-black text-amber-700 block mb-0.5">
+                              Вопрос наставника к классу:
+                            </span>
+                            <span>{sign.mentorQuestion}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -306,12 +342,8 @@ export const Screen3Detectives: React.FC<Screen3DetectivesProps> = ({
         </div>
       </div>
 
-      {/* 
-        ========================================================================
-        4. ROBOT ASSISTANT (Standing cleanly below cards grid, non-overlapping)
-        ========================================================================
-      */}
-      <div className="w-full max-w-2xl my-8">
+      {/* Робот-помощник */}
+      <div className="w-full max-w-2xl my-6">
         <RobotAssistant
           state={allSignsDiscovered ? 'happy' : 'surprised'}
           size="dialog"
@@ -324,12 +356,8 @@ export const Screen3Detectives: React.FC<Screen3DetectivesProps> = ({
         />
       </div>
 
-      {/* 
-        ========================================================================
-        5. CTA TO MISSION 2 (Positioned at the very bottom with clear margin)
-        ========================================================================
-      */}
-      <div className="w-full flex justify-center mt-2 mb-8">
+      {/* Навигация */}
+      <div className="w-full flex justify-center mt-2 mb-10">
         <button
           onClick={() => {
             sound.playSuccess();
