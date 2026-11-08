@@ -1,5 +1,5 @@
-// Web Audio API Procedural Sound Synthesizer
-// Clean, zero-external-dependency, offline-ready sound effects
+// Web Audio API Cyberpunk / Sci-Fi Procedural Sound Synthesizer
+// Zero external dependencies, pure Web Audio API, ultra-low latency
 
 class SoundEngine {
   private ctx: AudioContext | null = null;
@@ -25,105 +25,109 @@ class SoundEngine {
     return this.enabled;
   }
 
-  // Soft tactile click
+  // 1. Holographic digital blip (like pressing a glowing holographic button)
   public playClick() {
     if (!this.enabled) return;
     this.initCtx();
     if (!this.ctx) return;
 
+    const now = this.ctx.currentTime;
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
 
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(480, this.ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(720, this.ctx.currentTime + 0.05);
+    // Rapid high-frequency chirp for crisp digital tactile feel
+    osc.frequency.setValueAtTime(950, now);
+    osc.frequency.exponentialRampToValueAtTime(1900, now + 0.025);
 
-    gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
-
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-
-    osc.start();
-    osc.stop(this.ctx.currentTime + 0.06);
-  }
-
-  // 3D card flip whoosh
-  public playFlip() {
-    if (!this.enabled) return;
-    this.initCtx();
-    if (!this.ctx) return;
-
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(260, this.ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(520, this.ctx.currentTime + 0.12);
-
-    gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.12);
+    gain.gain.setValueAtTime(0.12, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
 
     osc.connect(gain);
     gain.connect(this.ctx.destination);
 
-    osc.start();
-    osc.stop(this.ctx.currentTime + 0.13);
+    osc.start(now);
+    osc.stop(now + 0.04);
   }
 
-  // Joyful arpeggio for correct answers / mission milestones
+  // 2. Ascending 3-note cyber arpeggio (reward in a cyberpunk game)
   public playSuccess() {
     if (!this.enabled) return;
     this.initCtx();
     if (!this.ctx) return;
 
     const now = this.ctx.currentTime;
-    const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+    // 3 bright sci-fi notes: D5 (587.33), A5 (880.0), D6 (1174.66)
+    const notes = [
+      { f: 587.33, t: 0.0, d: 0.12 },
+      { f: 880.0, t: 0.07, d: 0.12 },
+      { f: 1174.66, t: 0.14, d: 0.22 },
+    ];
 
-    notes.forEach((freq, idx) => {
+    notes.forEach((note) => {
       if (!this.ctx) return;
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
 
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, now + idx * 0.07);
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(note.f, now + note.t);
 
-      gain.gain.setValueAtTime(0.15, now + idx * 0.07);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.07 + 0.22);
+      gain.gain.setValueAtTime(0.15, now + note.t);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + note.t + note.d);
 
       osc.connect(gain);
       gain.connect(this.ctx.destination);
 
-      osc.start(now + idx * 0.07);
-      osc.stop(now + idx * 0.07 + 0.23);
+      osc.start(now + note.t);
+      osc.stop(now + note.t + note.d + 0.02);
     });
   }
 
-  // Soft thoughtful alert chime (non-punishing educational guidance)
-  public playAlert() {
+  // 3. Low digital buzz (system error glitch / access denied)
+  public playError() {
     if (!this.enabled) return;
     this.initCtx();
     if (!this.ctx) return;
 
     const now = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
+    
+    // Dual detuned oscillators for low sci-fi digital buzz
+    const osc1 = this.ctx.createOscillator();
+    const osc2 = this.ctx.createOscillator();
+    const filter = this.ctx.createBiquadFilter();
     const gain = this.ctx.createGain();
 
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(360, now);
-    osc.frequency.linearRampToValueAtTime(320, now + 0.18);
+    osc1.type = 'sawtooth';
+    osc1.frequency.setValueAtTime(120, now);
+    osc1.frequency.linearRampToValueAtTime(95, now + 0.16);
 
-    gain.gain.setValueAtTime(0.12, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+    osc2.type = 'square';
+    osc2.frequency.setValueAtTime(126, now);
+    osc2.frequency.linearRampToValueAtTime(100, now + 0.16);
 
-    osc.connect(gain);
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(800, now);
+
+    gain.gain.setValueAtTime(0.15, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.17);
+
+    osc1.connect(filter);
+    osc2.connect(filter);
+    filter.connect(gain);
     gain.connect(this.ctx.destination);
 
-    osc.start(now);
-    osc.stop(now + 0.23);
+    osc1.start(now);
+    osc2.start(now);
+    osc1.stop(now + 0.18);
+    osc2.stop(now + 0.18);
   }
 
-  // Laser/superpower unlock
+  // Alias for playError to keep full compatibility with educational alerts
+  public playAlert() {
+    this.playError();
+  }
+
+  // 4. Powerful synthesized sweep (like a supercomputer booting up or charging a shield)
   public playPowerUp() {
     if (!this.enabled) return;
     this.initCtx();
@@ -131,36 +135,67 @@ class SoundEngine {
 
     const now = this.ctx.currentTime;
     const osc = this.ctx.createOscillator();
+    const filter = this.ctx.createBiquadFilter();
     const gain = this.ctx.createGain();
 
     osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(180, now);
+    osc.frequency.exponentialRampToValueAtTime(1350, now + 0.36);
+
+    filter.type = 'bandpass';
+    filter.Q.setValueAtTime(3.0, now);
+    filter.frequency.setValueAtTime(300, now);
+    filter.frequency.exponentialRampToValueAtTime(2400, now + 0.36);
+
+    gain.gain.setValueAtTime(0.14, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.39);
+  }
+
+  // 5. 3D card flip sci-fi laser sweep
+  public playFlip() {
+    if (!this.enabled) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'triangle';
     osc.frequency.setValueAtTime(320, now);
-    osc.frequency.exponentialRampToValueAtTime(1100, now + 0.35);
+    osc.frequency.exponentialRampToValueAtTime(740, now + 0.09);
 
     gain.gain.setValueAtTime(0.1, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
 
     osc.connect(gain);
     gain.connect(this.ctx.destination);
 
     osc.start(now);
-    osc.stop(now + 0.36);
+    osc.stop(now + 0.11);
   }
 
-  // Grand fanfare victory
+  // 6. Grand cyberpunk fanfare victory
   public playVictoryFanfare() {
     if (!this.enabled) return;
     this.initCtx();
     if (!this.ctx) return;
 
     const now = this.ctx.currentTime;
-    // Fanfare chord progression: G4, C5, E5, G5, High C6
+    // Ascending sci-fi victory theme: G4, C5, E5, G5, High C6 with resonant chime
     const melody = [
-      { f: 392.0, t: 0.0, d: 0.15 },
-      { f: 523.25, t: 0.15, d: 0.15 },
-      { f: 659.25, t: 0.3, d: 0.15 },
-      { f: 783.99, t: 0.45, d: 0.25 },
-      { f: 1046.5, t: 0.72, d: 0.55 },
+      { f: 392.0, t: 0.0, d: 0.12 },
+      { f: 523.25, t: 0.11, d: 0.12 },
+      { f: 659.25, t: 0.22, d: 0.14 },
+      { f: 783.99, t: 0.35, d: 0.22 },
+      { f: 1046.5, t: 0.55, d: 0.55 },
     ];
 
     melody.forEach((item) => {

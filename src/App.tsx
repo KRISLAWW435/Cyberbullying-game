@@ -9,49 +9,34 @@ import { Screen5StopCrane } from './screens/Screen5StopCrane';
 import { Screen6ObserverPower } from './screens/Screen6ObserverPower';
 import { Screen7ChooseSuperpower } from './screens/Screen7ChooseSuperpower';
 import { Screen8PledgeAndVictory } from './screens/Screen8PledgeAndVictory';
+import { AudioProvider, useBackgroundMusic } from './context/AudioContext';
 
-export default function App() {
-  // Persistent session stage & score
-  const [currentStage, setCurrentStage] = useState<number>(() => {
-    try {
-      const saved = localStorage.getItem('kiberone_stage');
-      return saved ? parseInt(saved, 10) : 1;
-    } catch {
-      return 1;
-    }
-  });
+interface AppContentProps {
+  currentStage: number;
+  setCurrentStage: React.Dispatch<React.SetStateAction<number>>;
+  teamScore: number;
+  setTeamScore: React.Dispatch<React.SetStateAction<number>>;
+  teamPowersCount: Record<string, number>;
+  setTeamPowersCount: React.Dispatch<React.SetStateAction<Record<string, number>>>;
+  scoreBonusTrigger: number;
+  setScoreBonusTrigger: React.Dispatch<React.SetStateAction<number>>;
+  isDiscussionMode: boolean;
+  setIsDiscussionMode: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-  const [teamScore, setTeamScore] = useState<number>(() => {
-    try {
-      const saved = localStorage.getItem('kiberone_score');
-      return saved ? parseInt(saved, 10) : 0;
-    } catch {
-      return 0;
-    }
-  });
-
-  const [teamPowersCount, setTeamPowersCount] = useState<Record<string, number>>(() => {
-    try {
-      const saved = localStorage.getItem('kiberone_powers');
-      return saved ? JSON.parse(saved) : {};
-    } catch {
-      return {};
-    }
-  });
-
-  const [scoreBonusTrigger, setScoreBonusTrigger] = useState<number>(0);
-  const [isDiscussionMode, setIsDiscussionMode] = useState<boolean>(false);
-
-  // Sync state to localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem('kiberone_stage', currentStage.toString());
-      localStorage.setItem('kiberone_score', teamScore.toString());
-      localStorage.setItem('kiberone_powers', JSON.stringify(teamPowersCount));
-    } catch {
-      // safe fallback
-    }
-  }, [currentStage, teamScore, teamPowersCount]);
+function AppContent({
+  currentStage,
+  setCurrentStage,
+  teamScore,
+  setTeamScore,
+  teamPowersCount,
+  setTeamPowersCount,
+  scoreBonusTrigger,
+  setScoreBonusTrigger,
+  isDiscussionMode,
+  setIsDiscussionMode,
+}: AppContentProps) {
+  const { startMusic, resetMusic } = useBackgroundMusic();
 
   const handleAddScore = (points: number) => {
     setTeamScore((prev) => prev + points);
@@ -86,6 +71,7 @@ export default function App() {
     setCurrentStage(1);
     setTeamScore(0);
     setTeamPowersCount({});
+    resetMusic();
     try {
       localStorage.removeItem('kiberone_stage');
       localStorage.removeItem('kiberone_score');
@@ -105,7 +91,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white text-[#172B4D] selection:bg-[#FFD43B] selection:text-[#172B4D]">
-      {/* Top Header Bar */}
+      {/* Top Header Bar with Audio Popover */}
       <HeaderBar
         currentStage={currentStage}
         totalStages={8}
@@ -118,7 +104,10 @@ export default function App() {
       {/* Main Stage View */}
       <main className="flex-1 w-full pb-28 pt-2">
         {currentStage === 1 && (
-          <StartScreen onStart={handleNextStage} />
+          <StartScreen 
+            onStart={handleNextStage} 
+            onStartMusic={startMusic}
+          />
         )}
 
         {currentStage === 2 && (
@@ -189,5 +178,66 @@ export default function App() {
         onToggleDiscussionMode={() => setIsDiscussionMode(!isDiscussionMode)}
       />
     </div>
+  );
+}
+
+export default function App() {
+  // Persistent session stage & score
+  const [currentStage, setCurrentStage] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem('kiberone_stage');
+      return saved ? parseInt(saved, 10) : 1;
+    } catch {
+      return 1;
+    }
+  });
+
+  const [teamScore, setTeamScore] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem('kiberone_score');
+      return saved ? parseInt(saved, 10) : 0;
+    } catch {
+      return 0;
+    }
+  });
+
+  const [teamPowersCount, setTeamPowersCount] = useState<Record<string, number>>(() => {
+    try {
+      const saved = localStorage.getItem('kiberone_powers');
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+
+  const [scoreBonusTrigger, setScoreBonusTrigger] = useState<number>(0);
+  const [isDiscussionMode, setIsDiscussionMode] = useState<boolean>(false);
+
+  // Sync state to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('kiberone_stage', currentStage.toString());
+      localStorage.setItem('kiberone_score', teamScore.toString());
+      localStorage.setItem('kiberone_powers', JSON.stringify(teamPowersCount));
+    } catch {
+      // safe fallback
+    }
+  }, [currentStage, teamScore, teamPowersCount]);
+
+  return (
+    <AudioProvider currentStage={currentStage}>
+      <AppContent
+        currentStage={currentStage}
+        setCurrentStage={setCurrentStage}
+        teamScore={teamScore}
+        setTeamScore={setTeamScore}
+        teamPowersCount={teamPowersCount}
+        setTeamPowersCount={setTeamPowersCount}
+        scoreBonusTrigger={scoreBonusTrigger}
+        setScoreBonusTrigger={setScoreBonusTrigger}
+        isDiscussionMode={isDiscussionMode}
+        setIsDiscussionMode={setIsDiscussionMode}
+      />
+    </AudioProvider>
   );
 }

@@ -14,9 +14,10 @@ import { sound } from '../utils/audio';
 
 interface StartScreenProps {
   onStart: () => void;
+  onStartMusic?: () => void;
 }
 
-export const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
+export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onStartMusic }) => {
   return (
     <div className="relative min-h-[calc(100vh-140px)] flex flex-col items-center justify-center px-4 py-6 sm:py-10 overflow-hidden">
       {/* 
@@ -157,6 +158,9 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
             whileTap={{ scale: 0.98, y: 4 }}
             onClick={() => {
               sound.playSuccess();
+              if (onStartMusic) {
+                onStartMusic();
+              }
               onStart();
             }}
             className="group relative h-16 sm:h-18 px-8 sm:px-12 rounded-3xl bg-gradient-to-r from-[#007BFF] to-[#0066dd] text-white font-brand font-black text-xl sm:text-2xl cursor-pointer flex items-center gap-3.5 border-2 border-yellow-300 btn-3d-primary"

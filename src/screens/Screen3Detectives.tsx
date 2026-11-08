@@ -240,10 +240,10 @@ export const Screen3Detectives: React.FC<Screen3DetectivesProps> = ({
                   )}
                 </div>
 
-                {/* Card Container (min-h-[620px] h-[620px] sm:h-[650px] fixed) */}
+                {/* Card Container (min-h-[440px] h-[440px] fixed) */}
                 <div
                   onClick={() => handleToggleSign(sign.id)}
-                  className="perspective-1000 cursor-pointer min-h-[620px] h-[620px] sm:h-[650px] w-full group"
+                  className="perspective-1000 cursor-pointer min-h-[440px] h-[440px] w-full group"
                 >
                   <div
                     className={`relative w-full h-full duration-500 transform-style-3d transition-transform rounded-b-3xl rounded-tr-3xl shadow-lg hover:shadow-2xl hover:-translate-y-1.5 ${
@@ -251,48 +251,48 @@ export const Screen3Detectives: React.FC<Screen3DetectivesProps> = ({
                     }`}
                   >
                     {/* FRONT FACE (Unopened Clue Folder) */}
-                    <div className="absolute inset-0 backface-hidden p-6 sm:p-8 rounded-b-3xl rounded-tr-3xl border-3 bg-white border-slate-200 hover:border-[#007BFF] flex flex-col justify-between items-center text-center overflow-hidden transition-colors">
+                    <div className="absolute inset-0 backface-hidden p-4 sm:p-5 rounded-b-3xl rounded-tr-3xl border-3 bg-white border-slate-200 hover:border-[#007BFF] flex flex-col justify-between items-center text-center overflow-hidden transition-colors">
                       <div className="w-full flex items-center justify-between">
-                        <span className="px-3.5 py-1.5 rounded-full bg-blue-50 text-[#007BFF] font-brand font-black text-xs sm:text-sm uppercase tracking-wider">
+                        <span className="px-3 py-1 rounded-full bg-blue-50 text-[#007BFF] font-brand font-black text-xs uppercase tracking-wider">
                           Улика #{sign.id}
                         </span>
-                        <div className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#FFD43B] text-[#172B4D] text-xs sm:text-sm font-black shadow-xs group-hover:scale-105 transition-transform">
-                          <Search size={15} className="stroke-[3]" />
+                        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFD43B] text-[#172B4D] text-xs font-black shadow-xs group-hover:scale-105 transition-transform">
+                          <Search size={14} className="stroke-[3]" />
                           <span>Разгадать</span>
                         </div>
                       </div>
 
-                      <div className="my-auto flex flex-col items-center px-4">
-                        <div className="w-32 h-32 sm:w-40 sm:h-40 mb-6 flex items-center justify-center group-hover:scale-110 transition-transform filter drop-shadow-md">
-                          <Pixar3DIcon name={sign.icon} size={130} animate={false} />
+                      <div className="my-auto flex flex-col items-center px-2">
+                        <div className="w-24 h-24 sm:w-28 sm:h-28 mb-3 flex items-center justify-center group-hover:scale-110 transition-transform filter drop-shadow-md">
+                          <Pixar3DIcon name={sign.icon} size={84} animate={false} />
                         </div>
-                        <h4 className="font-brand font-black text-2xl sm:text-3xl text-[#172B4D] leading-snug">
+                        <h4 className="font-brand font-black text-xl sm:text-2xl text-[#172B4D] leading-snug">
                           {sign.title}
                         </h4>
                       </div>
 
-                      <div className="pt-3 border-t border-slate-100 w-full text-sm font-bold text-[#007BFF] flex items-center justify-center gap-2">
+                      <div className="pt-2.5 border-t border-slate-100 w-full text-xs sm:text-sm font-bold text-[#007BFF] flex items-center justify-center gap-2">
                         <span>Нажмите, чтобы разгадать</span>
                         <span className="text-base">🔎</span>
                       </div>
                     </div>
 
                     {/* BACK FACE (Strictly overflow-hidden, No internal scroll!) */}
-                    <div className="absolute inset-0 backface-hidden rotate-y-180 p-5 sm:p-6 rounded-b-3xl rounded-tr-3xl border-3 bg-gradient-to-b from-[#EAF4FF] via-white to-blue-50/70 border-[#007BFF] flex flex-col justify-between text-left shadow-xl overflow-hidden">
+                    <div className="absolute inset-0 backface-hidden rotate-y-180 p-3.5 sm:p-4 rounded-b-3xl rounded-tr-3xl border-3 bg-gradient-to-b from-[#EAF4FF] via-white to-blue-50/70 border-[#007BFF] flex flex-col justify-between text-left shadow-xl overflow-hidden">
                       {/* Top Header Badge */}
-                      <div className="flex items-center justify-between shrink-0 mb-1.5">
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 border border-emerald-400 text-emerald-800 font-brand font-black text-xs uppercase tracking-wider shadow-2xs">
-                          <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
+                      <div className="flex items-center justify-between shrink-0 mb-1">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-emerald-100 border border-emerald-400 text-emerald-800 font-brand font-black text-xs uppercase tracking-wider shadow-2xs">
+                          <CheckCircle2 size={13} className="text-emerald-600 shrink-0" />
                           <span>✓ Улика найдена</span>
                         </span>
                         <span className="text-xs font-bold text-slate-400 hover:text-[#007BFF] flex items-center gap-1">
-                          <RotateCw size={13} /> Свернуть
+                          <RotateCw size={12} /> Свернуть
                         </span>
                       </div>
 
-                      {/* Compact 3D Illustration: w-40 h-40 sm:w-48 sm:h-48 */}
-                      <div className="w-full flex justify-center shrink-0 my-1">
-                        <div className="w-40 h-40 sm:w-48 sm:h-48 rounded-2xl bg-white p-2 shadow-sm border border-blue-100 flex items-center justify-center overflow-hidden">
+                      {/* Compact 3D Illustration: w-28 h-28 */}
+                      <div className="w-full flex justify-center shrink-0 my-0.5">
+                        <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-white p-1.5 shadow-xs border border-blue-100 flex items-center justify-center overflow-hidden">
                           <img
                             src={sign.image}
                             alt={sign.imageAlt}
@@ -305,28 +305,28 @@ export const Screen3Detectives: React.FC<Screen3DetectivesProps> = ({
                       {/* Content block: tight margins, crisp text */}
                       <div className="flex-1 flex flex-col justify-between min-h-0">
                         {/* Title */}
-                        <h4 className="font-brand font-black text-xl sm:text-2xl text-[#007BFF] leading-snug mb-1 shrink-0">
+                        <h4 className="font-brand font-black text-base sm:text-lg text-[#007BFF] leading-tight mb-1 shrink-0">
                           {sign.title}
                         </h4>
 
-                        {/* Description: text-base sm:text-lg font-semibold */}
-                        <p className="text-base sm:text-lg text-slate-800 font-semibold leading-snug mb-2 shrink-0">
+                        {/* Description */}
+                        <p className="text-xs sm:text-[13px] text-slate-800 font-semibold leading-snug mb-1 shrink-0">
                           {sign.desc}
                         </p>
 
-                        {/* Example Box: bg-blue-50, border-blue-200 */}
-                        <div className="p-3 sm:p-3.5 bg-blue-50 rounded-2xl border-2 border-blue-200 text-sm sm:text-base text-slate-800 leading-snug mb-2 shadow-xs shrink-0">
-                          <span className="text-[#007BFF] font-black uppercase tracking-wider block text-xs sm:text-sm mb-0.5">
+                        {/* Example Box */}
+                        <div className="p-2 sm:p-2.5 bg-blue-50 rounded-xl border border-blue-200 text-xs text-slate-800 leading-snug mb-1 shadow-2xs shrink-0">
+                          <span className="text-[#007BFF] font-black uppercase tracking-wider block text-[10px] mb-0.5">
                             Пример из жизни:
                           </span>
                           <span>{sign.example}</span>
                         </div>
 
-                        {/* Mentor Question Box: bg-amber-50, text-base sm:text-lg */}
-                        <div className="p-3 sm:p-3.5 bg-amber-50 rounded-2xl border-2 border-amber-300 text-sm sm:text-base font-bold text-amber-900 leading-snug shadow-xs flex items-start gap-2.5 shrink-0">
-                          <span className="text-xl shrink-0">💬</span>
+                        {/* Mentor Question Box */}
+                        <div className="p-2 sm:p-2.5 bg-amber-50 rounded-xl border border-amber-300 text-xs font-bold text-amber-900 leading-snug shadow-2xs flex items-start gap-2 shrink-0">
+                          <span className="text-base shrink-0">💬</span>
                           <div>
-                            <span className="text-xs uppercase tracking-wider font-black text-amber-700 block mb-0.5">
+                            <span className="text-[10px] uppercase tracking-wider font-black text-amber-700 block mb-0.5">
                               Вопрос наставника к классу:
                             </span>
                             <span>{sign.mentorQuestion}</span>

@@ -19,7 +19,7 @@ import case1Img from '../assets/cases/case-1-sad-phone.jpg';
 import case2Img from '../assets/cases/case-2-laughing-photo.jpg';
 import case3Img from '../assets/cases/case-3-arguing-game.jpg';
 import case4Img from '../assets/cases/case-4-excluded-group.jpg';
-import case5Img from '../assets/cases/case-5-looming-shadow.jpg';
+import case5Img from '../assets/cases/case-5-fake-profile.jpg';
 import case6Img from '../assets/cases/case-6-bystander-watching.jpg';
 
 export const CASE_RIDDLE_IMAGES: Record<number, string> = {
