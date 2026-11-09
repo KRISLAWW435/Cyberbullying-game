@@ -166,7 +166,7 @@ export const Screen2TeamMission: React.FC<Screen2TeamMissionProps> = ({
           </div>
 
           <h3 className="font-brand font-black text-xl sm:text-2xl text-[#172B4D] mb-4 leading-snug">
-            «А может ли суперсилой быть умение вовремя поддержать друга?»
+            Ребята, ответьте на важный вопрос:
           </h3>
 
           {/* Robot's Voice Quote with text-lg */}
@@ -174,7 +174,7 @@ export const Screen2TeamMission: React.FC<Screen2TeamMissionProps> = ({
             <p className="text-base sm:text-lg md:text-xl font-bold text-[#172B4D] leading-relaxed">
               {answeredQuestion
                 ? '«Именно! Самые крутые цифровые суперсилы — это внимательность, смелость попросить помощи и искреннее уважение к другим людям!»'
-                : '«Ребята, ответьте на важный вопрос: может ли суперсилой быть умение вовремя поддержать друга в интернете?»'}
+                : '«Может ли суперсилой быть умение вовремя поддержать друга в интернете?»'}
             </p>
           </div>
 
